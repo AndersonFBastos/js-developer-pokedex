@@ -15,22 +15,32 @@ function convertPokemonToLi(pokemon) {
                 <ol class="types">
                     ${pokemon.types.map((type) => `<li class="type ${type}">${type}</li>`).join('')}
                 </ol>
-
-                <img src="${pokemon.photo}"
-                     alt="${pokemon.name}">
+                <a href="#" onclick="redirecionar('${pokemon.number}', '${pokemon.name}')">
+                    <img src="${pokemon.photo}"
+                        alt="${pokemon.name}">
+                </a>
             </div>
         </li>
     `
 }
 
-function loadPokemonItens(offset, limit) {
+
+function redirecionar(id) {
+    // Construir a URL com parâmetros
+    var url = 'pokemon.html?id=' + id;
+    window.location.href = url;
+}
+
+
+
+function loadPokemon(offset, limit) {
     pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
         const newHtml = pokemons.map(convertPokemonToLi).join('')
         pokemonList.innerHTML += newHtml
     })
 }
 
-loadPokemonItens(offset, limit)
+loadPokemon(offset, limit)
 
 loadMoreButton.addEventListener('click', () => {
     offset += limit
@@ -38,10 +48,10 @@ loadMoreButton.addEventListener('click', () => {
 
     if (qtdRecordsWithNexPage >= maxRecords) {
         const newLimit = maxRecords - offset
-        loadPokemonItens(offset, newLimit)
+        loadPokemon(offset, newLimit)
 
         loadMoreButton.parentElement.removeChild(loadMoreButton)
     } else {
-        loadPokemonItens(offset, limit)
+        loadPokemon(offset, limit)
     }
 })
